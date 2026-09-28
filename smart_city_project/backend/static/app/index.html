@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmedabad Citizen Eco-Transit App</title>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+        }
+        .header h1 {
+            font-size: 14px;
+            margin: 0;
+            color: #06b6d4;
+        }
+        .section-title {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 4px 0;
+        }
+        .card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .rewards {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rewards-val {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .alerts-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .alert-card {
+            background: #1e293b;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 12px;
+        }
+        .alert-card.danger {
+            border-left-color: #ef4444;
+        }
+        .alert-card.info {
+            border-left-color: #3b82f6;
+        }
+        .alert-time {
+            font-size: 9px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span>🌿</span>
+        <h1>Eco-Transit Citizen App</h1>
+    </div>
+    <div class="card rewards">
+        <div>
+            <div style="font-size: 10px; color: #64748b;">Eco-Wallet Balance</div>
+            <div style="font-weight: 600; font-size: 12px; margin-top: 2px;">Pratik (You)</div>
+        </div>
+        <div class="rewards-val">185 Cr</div>
+    </div>
+    <div class="section-title">City Safety Alerts</div>
+    <div class="alerts-list" id="alerts">
+        <div style="color: #64748b; font-size: 11px; text-align: center; margin-top: 20px;">Fetching live reports...</div>
+    </div>
+    <script>
+        async function loadAlerts() {
+            try {
+                const r = await fetch('/api/notifications/active');
+                if (r.ok) {
+                    const notifs = await r.json();
+                    const container = document.getElementById('alerts');
+                    if (notifs.length === 0) {
+                        container.innerHTML = '<div style="color: #64748b; font-size: 11px; text-align: center; margin-top: 20px;">✅ All routes normal</div>';
+                        return;
+                    }
+                    container.innerHTML = notifs.map(n => {
+                        let cls = '';
+                        if (n.type === 'EMERGENCY') cls = 'info';
+                        if (n.type === 'ACCIDENT') cls = 'danger';
+                        return `
+                            <div class="alert-card ${cls}">
+                                <div style="font-weight: 600;">${n.type}</div>
+                                <div style="margin-top: 2px; color: #cbd5e1;">${n.message}</div>
+                                <div class="alert-time">Junction: ${n.junction} • ${n.timestamp.substring(11, 19)}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch(e) {}
+        }
+        loadAlerts();
+        setInterval(loadAlerts, 3000);
+    </script>
+</body>
+</html>

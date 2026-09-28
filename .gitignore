@@ -1,0 +1,47 @@
+# Node / Frontend dependencies
+node_modules/
+.vite/
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.venv/
+venv/
+env/
+ENV/
+
+# Build outputs
+dist/
+build/
+
+# Environment configurations & secrets
+.env
+.env.local
+.env.*.local
+
+# Databases & local logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Large media files / dynamic uploads
+uploads/*.mp4
+smart_city_project/backend/uploads/*.mp4
+*.mp4
+
+# IDE & Editor temporary files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
